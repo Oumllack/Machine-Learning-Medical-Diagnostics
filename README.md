@@ -83,9 +83,22 @@ We implemented and compared multiple models:
 
 ## Results and Analysis
 
-### 1. Classification Performance
+### 1. Feature Analysis
+
+#### Feature Distributions
+![Feature Distributions](visualizations/feature_distribution.png)
+*Distribution of key features by diabetes status. Note the clear separation in glucose levels and BMI between diabetic and non-diabetic patients.*
+
+#### Correlation Analysis
+![Correlation Heatmap](visualizations/correlation_heatmap.png)
+*Correlation matrix showing relationships between features. Strong correlations observed between glucose levels, BMI, and diabetes status.*
+
+### 2. Classification Performance
 
 #### Model Comparison
+![Model Performance](visualizations/model_performance.png)
+*Comparative performance of different models. The deep neural network (MLP) achieved the highest accuracy at 81.5%.*
+
 | Model | Accuracy | Precision | Recall | F1-Score |
 |-------|----------|-----------|---------|-----------|
 | MLP (5 layers) | 81.5% | 0.82 | 0.81 | 0.81 |
@@ -95,33 +108,37 @@ We implemented and compared multiple models:
 | Random Forest | 73.0% | 0.74 | 0.73 | 0.73 |
 | Logistic Regression | 70.0% | 0.71 | 0.70 | 0.70 |
 
-### 2. Clustering Results
+### 3. Clustering Analysis
+
+#### PCA Visualization
+![PCA Analysis](visualizations/pca_visualization.png)
+*PCA visualization showing the separation of patients in the reduced feature space. Three distinct clusters are visible.*
 
 #### Cluster Profiles
+![Cluster Analysis](visualizations/clusters_pca.png)
+*Detailed cluster analysis showing the distribution of patients across different risk groups.*
+
+#### Risk Stratification
+![Risk Stratification](visualizations/roc_curves.png)
+*ROC curves for different models, showing the trade-off between true positive and false positive rates.*
+
 | Cluster | Size | Age | Glucose | BMI | Insulin | Diabetes Rate |
 |---------|------|-----|---------|-----|---------|---------------|
 | 0 | 256 | 29.3 | 141.4 | 39.2 | 206.0 | 55% |
 | 1 | 256 | 45.6 | 129.7 | 32.9 | 136.0 | 51% |
 | 2 | 256 | 26.0 | 106.0 | 28.8 | 111.8 | 13% |
 
-#### Key Findings
-1. **High-Risk Cluster (0)**
-   - Young patients (29.3 years)
-   - High glucose levels (141.4 mg/dL)
-   - High BMI (39.2 kg/m²)
-   - Highest diabetes rate (55%)
+### 4. Interactive Visualizations
 
-2. **Moderate-Risk Cluster (1)**
-   - Middle-aged patients (45.6 years)
-   - Moderate glucose levels (129.7 mg/dL)
-   - Normal BMI (32.9 kg/m²)
-   - Moderate diabetes rate (51%)
+For interactive exploration of the results, please refer to:
+- [Cluster Analysis Dashboard](visualizations/cluster_analysis.html)
+- [Risk Stratification Dashboard](visualizations/risk_stratification.html)
 
-3. **Low-Risk Cluster (2)**
-   - Young patients (26.0 years)
-   - Normal glucose levels (106.0 mg/dL)
-   - Normal BMI (28.8 kg/m²)
-   - Lowest diabetes rate (13%)
+These interactive visualizations allow you to:
+- Explore patient distributions across clusters
+- Analyze feature relationships
+- Investigate risk factors in detail
+- Compare different patient subgroups
 
 ## Discussion
 
