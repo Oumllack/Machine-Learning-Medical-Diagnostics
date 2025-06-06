@@ -7,6 +7,8 @@ from sklearn.decomposition import PCA
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import os
+from sklearn.metrics import roc_curve, auc
 
 # Set style and font for English
 plt.style.use('default')  # Using default style instead of seaborn
@@ -143,28 +145,43 @@ plt.close()
 
 # 7. Risk Stratification (ROC Curves) (en anglais)
 print("Generating Risk Stratification (ROC Curves) in English...")
-# (Pour l'exemple, on génère un graphique fictif (diagonale) pour Risk Stratification (ROC Curves) en anglais.)
-fpr = np.linspace(0, 1, 100)
-tpr = fpr
+
+roc_data_path = 'visualizations/roc_data.npz'
+if os.path.exists(roc_data_path):
+    roc_data = np.load(roc_data_path, allow_pickle=True)
+    y_test = roc_data['y_test']
+    model_names = roc_data['model_names']
+    y_pred_probas = roc_data['y_pred_probas']
+else:
+    print("roc_data.npz not found. Please re-run the main analysis script to generate ROC data.")
+    y_test = None
+    model_names = []
+    y_pred_probas = []
+
 plt.figure(figsize=(10, 8))
-plt.plot(fpr, tpr, 'k--', label='Random (AUC = 0.5)')
-# (Si tu as des données ROC réelles, trace ici les courbes pour chaque modèle.)
-# (Par exemple, pour MLP (5 couches) :
-# (fpr, tpr, _) = roc_curve(y_test, y_pred_mlp)
-# (roc_auc = auc(fpr, tpr)
-# (plt.plot(fpr, tpr, label=f'MLP (5 layers) (AUC = {roc_auc:.2f})')
-# (Pour LightGBM (fictif) :
-# (fpr, tpr, _) = roc_curve(y_test, y_pred_lgbm)
-# (roc_auc = auc(fpr, tpr)
-# (plt.plot(fpr, tpr, label=f'LightGBM (AUC = {roc_auc:.2f})')
-# (etc.)
-plt.xlabel('False Positive Rate')
-plt.ylabel('True Positive Rate')
-plt.title('Risk Stratification (ROC Curves)')
-plt.legend(loc='lower right')
-plt.grid(True, alpha=0.3)
-plt.tight_layout()
-plt.savefig('visualizations/roc_curves.png', dpi=300, bbox_inches='tight')
-plt.close()
+if y_test is not None:
+    try:
+        y_test = np.array(y_test).astype(int).ravel()
+        for i, name in enumerate(model_names):
+            y_pred = np.array(y_pred_probas[i]).astype(float).ravel()
+            fpr, tpr, _ = roc_curve(y_test, y_pred)
+            roc_auc = auc(fpr, tpr)
+            plt.plot(fpr, tpr, label=f'{name} (AUC = {roc_auc:.2f})')
+        plt.plot([0, 1], [0, 1], 'k--', label='Random (AUC = 0.5)')
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.title('Risk Stratification (ROC Curves)')
+        plt.legend(loc='lower right')
+        plt.grid(True, alpha=0.3)
+        plt.tight_layout()
+        plt.savefig('visualizations/roc_curves.png', dpi=300, bbox_inches='tight')
+        plt.close()
+    except Exception as e:
+        print(f"Erreur lors du tracé des courbes ROC : {e}")
+        print(f"y_test type: {type(y_test)}, shape: {np.shape(y_test)}")
+        for i, name in enumerate(model_names):
+            print(f"{name} y_pred_proba type: {type(y_pred_probas[i])}, shape: {np.shape(y_pred_probas[i])}")
+else:
+    print("No ROC data available. Skipping ROC curve plot.")
 
 print("All visualizations generated successfully in the 'visualizations' directory!") 

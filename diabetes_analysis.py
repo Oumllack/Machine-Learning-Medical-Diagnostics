@@ -208,7 +208,8 @@ def perform_classification(X, y):
             'y_pred_proba': y_pred_proba,
             'fpr': fpr,
             'tpr': tpr,
-            'roc_auc': roc_auc
+            'roc_auc': roc_auc,
+            'y_test': y_test
         }
     return results
 
@@ -278,9 +279,23 @@ def visualize_results(df, clusters, classification_results):
     
     # 1. Courbes ROC pour tous les modèles
     plt.figure(figsize=(12, 8))
+    model_names = []
+    y_pred_probas = []
+    y_test = None
+    
     for name, result in classification_results.items():
         plt.plot(result['fpr'], result['tpr'], 
                 label=f'{name} (AUC = {result["roc_auc"]:.2f})')
+        model_names.append(name)
+        y_pred_probas.append(result['y_pred_proba'])
+        if y_test is None:
+            y_test = result.get('y_test')
+    
+    # Sauvegarder les données ROC pour la visualisation
+    np.savez('visualizations/roc_data.npz',
+             y_test=y_test,
+             model_names=model_names,
+             y_pred_probas=y_pred_probas)
     
     plt.plot([0, 1], [0, 1], 'k--')
     plt.xlabel('Taux de faux positifs')
