@@ -120,4 +120,51 @@ plt.legend()
 plt.savefig('visualizations/roc_curves.png', dpi=300, bbox_inches='tight')
 plt.close()
 
+# 6. Cluster Profiles (Cluster Analysis) (en anglais)
+print("Generating Cluster Profiles (Cluster Analysis) in English...")
+cluster_stats = df_clusters.groupby('Cluster').agg({
+    'Age': 'mean',
+    'Glucose': 'mean',
+    'BMI': 'mean',
+    'Insulin': 'mean',
+    'Outcome': 'mean'
+}).round(2)
+cluster_stats.index = ['High Risk', 'Moderate Risk', 'Low Risk']
+cluster_stats.columns = ['Average Age', 'Average Glucose (mg/dL)', 'Average BMI (kg/m²)', 'Average Insulin (mu U/ml)', 'Diabetes Rate']
+cluster_stats.to_csv('visualizations/cluster_analysis.csv', index_label='Cluster')
+# (Optionnel : générer un graphique en barres pour Cluster Profiles en anglais)
+fig, ax = plt.subplots(figsize=(12, 6))
+cluster_stats.plot(kind='bar', ax=ax, rot=0, legend=True, title='Cluster Profiles (Cluster Analysis)')
+ax.set_ylabel('Mean Value')
+ax.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig('visualizations/cluster_profiles.png', dpi=300, bbox_inches='tight')
+plt.close()
+
+# 7. Risk Stratification (ROC Curves) (en anglais)
+print("Generating Risk Stratification (ROC Curves) in English...")
+# (Pour l'exemple, on génère un graphique fictif (diagonale) pour Risk Stratification (ROC Curves) en anglais.)
+fpr = np.linspace(0, 1, 100)
+tpr = fpr
+plt.figure(figsize=(10, 8))
+plt.plot(fpr, tpr, 'k--', label='Random (AUC = 0.5)')
+# (Si tu as des données ROC réelles, trace ici les courbes pour chaque modèle.)
+# (Par exemple, pour MLP (5 couches) :
+# (fpr, tpr, _) = roc_curve(y_test, y_pred_mlp)
+# (roc_auc = auc(fpr, tpr)
+# (plt.plot(fpr, tpr, label=f'MLP (5 layers) (AUC = {roc_auc:.2f})')
+# (Pour LightGBM (fictif) :
+# (fpr, tpr, _) = roc_curve(y_test, y_pred_lgbm)
+# (roc_auc = auc(fpr, tpr)
+# (plt.plot(fpr, tpr, label=f'LightGBM (AUC = {roc_auc:.2f})')
+# (etc.)
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Risk Stratification (ROC Curves)')
+plt.legend(loc='lower right')
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig('visualizations/roc_curves.png', dpi=300, bbox_inches='tight')
+plt.close()
+
 print("All visualizations generated successfully in the 'visualizations' directory!") 
